@@ -2,6 +2,7 @@ package com.pluralsite;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class AccountingLedger {
@@ -47,6 +48,13 @@ public class AccountingLedger {
         System.out.println("Enter deposit details:");
         Transaction deposit = new Transaction();
         newTransaction(deposit);
+        try {
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
+            bufWrite.write(String.valueOf(deposit));
+            bufWrite.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         home();
     }
 
@@ -54,6 +62,14 @@ public class AccountingLedger {
         System.out.println("Enter payment details:");
         Transaction payment = new Transaction();
         newTransaction(payment);
+        payment.setAmount(-payment.getAmount());
+        try {
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
+            bufWrite.write(String.valueOf(payment));
+            bufWrite.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         home();
     }
 
@@ -90,15 +106,32 @@ public class AccountingLedger {
 
     public static void displayAll() {
         readFromFile();
-        System.out.println(transactionsList);
+        Iterator<Transaction> transactionIterator = transactionsList.iterator();
+        String output;
+        while (transactionIterator.hasNext()) {
+            output = String.valueOf(transactionIterator.next());
+            System.out.println(output);
+        }
     }
 
     public static void displayDeposits() {
-
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            if (transaction.getAmount() >= 0) {
+                System.out.println(transaction);
+            }
+        }
+        ledgerScreen();
     }
 
     public static void displayPayments() {
-
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            if (transaction.getAmount() < 0) {
+                System.out.println(transaction);
+            }
+        }
+        ledgerScreen();
     }
 
     public static void reportScreen() {
@@ -189,29 +222,23 @@ public class AccountingLedger {
         String vendor = tokens[3];
         double amount = Double.parseDouble(tokens[4]);
 
-
         Transaction transaction = new Transaction(date, time, description, vendor, amount); // Creates the transaction
         transactionsList.add(transaction);
     }
 
-    private static void newTransaction(Transaction transaction) { //sets values of new transactions when called and writes it to a file
-        try {
-            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file));
+    private static void newTransaction(Transaction transaction) { //sets values of new transactions
+        transaction.currentDate();
+        transaction.currentTime();
+        scanner.nextLine();
 
-            transaction.currentDate();
-            transaction.currentTime();
-            scanner.nextLine();
-            System.out.println("Description: ");
-            transaction.setDescription(scanner.nextLine());
-            System.out.println("Vendor: ");
-            transaction.setVendor(scanner.nextLine());
-            System.out.println("Amount: ");
-            transaction.setAmount(scanner.nextDouble());
-            bufWrite.write(String.valueOf(transaction));
-            bufWrite.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println("Description: ");
+        transaction.setDescription(scanner.nextLine());
+
+        System.out.println("Vendor: ");
+        transaction.setVendor(scanner.nextLine());
+
+        System.out.println("Amount: ");
+        transaction.setAmount(scanner.nextDouble());
     }
 
     private static void newDebit() { //sets values of new Debit when called and writes it to a file
@@ -219,13 +246,17 @@ public class AccountingLedger {
             BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv")); //creates buffered writer and designates file destination
             Debit debit = new Debit();
             System.out.println("Enter debit information:");
+            
             System.out.println("Card Number: ");
             debit.setCardNumber(scanner.nextInt());
+            
             System.out.println("Expiration: ");
             scanner.nextLine();
             debit.setExpirationDate(scanner.nextLine());
+            
             System.out.println("Security code: ");
             debit.setSecurityCode(scanner.nextShort());
+            
             bufWrite.write(String.valueOf(debit));
             bufWrite.close();
         } catch (IOException e) {
