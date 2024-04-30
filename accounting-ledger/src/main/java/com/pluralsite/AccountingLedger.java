@@ -1,6 +1,8 @@
 package com.pluralsite;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -10,7 +12,10 @@ public class AccountingLedger {
     static String file = "transactions.csv";
     static char selectedChar;
     static ArrayList<Transaction> transactionsList = new ArrayList<>();
-
+    static LocalDate date = LocalDate.now();
+    static DateTimeFormatter currentDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    static String dmy = (date.format(currentDate));
+    static String[] timePeriod = dmy.split("-");
 
     public static void main(String[] args) {
         home();
@@ -25,14 +30,14 @@ public class AccountingLedger {
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
             case ('D' | 'd'):
-                makeDeposit();
+                makeDeposit(); // complete
                 break;
             case ('P' | 'p'):
                 newDebit();
-                makePayment();
+                makePayment(); // complete
                 break;
             case ('L' | 'l'):
-                ledgerScreen();
+                ledgerScreen(); // complete
                 break;
             case ('X' | 'x'):
                 System.out.println("Goodbye");
@@ -41,36 +46,7 @@ public class AccountingLedger {
                 System.out.println("Invalid input");
                 home();
                 break;
-
         }
-    }
-    private static void makeDeposit() {
-        System.out.println("Enter deposit details:");
-        Transaction deposit = new Transaction();
-        newTransaction(deposit);
-        try {
-            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
-            bufWrite.write(String.valueOf(deposit));
-            bufWrite.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        home();
-    }
-
-    public static void makePayment() {
-        System.out.println("Enter payment details:");
-        Transaction payment = new Transaction();
-        newTransaction(payment);
-        payment.setAmount(-payment.getAmount());
-        try {
-            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
-            bufWrite.write(String.valueOf(payment));
-            bufWrite.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        home();
     }
 
     public static void ledgerScreen() {
@@ -83,55 +59,25 @@ public class AccountingLedger {
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
             case ('A' | 'a'):
-                displayAll();
+                displayAll(); //complete
                 break;
             case ('D' | 'd'):
-                displayDeposits();
+                displayDeposits(); // complete
                 break;
             case ('P' | 'p'):
-                displayPayments();
+                displayPayments(); // complete
                 break;
             case ('R' | 'p'):
                 reportScreen();
                 break;
             case ('H' | 'h'):
-                home();
+                home(); //complete
                 break;
             default:
                 System.out.println("Invalid input");
                 ledgerScreen();
                 break;
         }
-    }
-
-    public static void displayAll() {
-        readFromFile();
-        Iterator<Transaction> transactionIterator = transactionsList.iterator();
-        String output;
-        while (transactionIterator.hasNext()) {
-            output = String.valueOf(transactionIterator.next());
-            System.out.println(output);
-        }
-    }
-
-    public static void displayDeposits() {
-        readFromFile();
-        for (Transaction transaction : transactionsList) {
-            if (transaction.getAmount() >= 0) {
-                System.out.println(transaction);
-            }
-        }
-        ledgerScreen();
-    }
-
-    public static void displayPayments() {
-        readFromFile();
-        for (Transaction transaction : transactionsList) {
-            if (transaction.getAmount() < 0) {
-                System.out.println(transaction);
-            }
-        }
-        ledgerScreen();
     }
 
     public static void reportScreen() {
@@ -169,20 +115,123 @@ public class AccountingLedger {
         }
     }
 
-    public static void monthToDate() {
+    private static void makeDeposit() {
+        System.out.println("Enter deposit details:");
+        Transaction deposit = new Transaction();
+        newTransaction(deposit);
+        try {
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
+            bufWrite.write(String.valueOf(deposit));
+            bufWrite.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        home();
+    }
 
+    public static void makePayment() {
+        System.out.println("Enter payment details:");
+        Transaction payment = new Transaction();
+        newTransaction(payment);
+        payment.setAmount(-payment.getAmount());
+        try {
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
+            bufWrite.write(String.valueOf(payment));
+            bufWrite.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        home();
+    }
+
+    public static void displayAll() {
+        readFromFile();
+        Iterator<Transaction> transactionIterator = transactionsList.iterator();
+        String output;
+        while (transactionIterator.hasNext()) {
+            output = String.valueOf(transactionIterator.next());
+            System.out.println(output);
+        }
+    }
+
+    public static void displayDeposits() {
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            if (transaction.getAmount() >= 0) {
+                System.out.println(transaction);
+            }
+        }
+        ledgerScreen();
+    }
+
+    public static void displayPayments() {
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            if (transaction.getAmount() < 0) {
+                System.out.println(transaction);
+            }
+        }
+        ledgerScreen();
+    }
+
+    public static void monthToDate() {
+        readFromFile();
+        Iterator<Transaction> transactionIterator = transactionsList.iterator();
+        String output;
+        while (transactionIterator.hasNext()) {
+            output = String.valueOf(transactionIterator.next());
+            String[] tokens = output.split("\\|");
+            String[] dateMarkers = tokens[0].split("-");
+            if (dateMarkers[2].equals(timePeriod[2])) {
+                System.out.println(output);
+            }
+        }
     }
 
     public static void previousMonth() {
-
+        readFromFile();
+        Iterator<Transaction> transactionIterator = transactionsList.iterator();
+        String output;
+        while (transactionIterator.hasNext()) {
+            output = String.valueOf(transactionIterator.next());
+            String[] tokens = output.split("\\|");
+            String[] dateMarkers = tokens[0].split("-");
+            int currentMonth = Integer.parseInt((dateMarkers[2]));
+            int prevMonth = Integer.parseInt(timePeriod[2]) - 1;
+            if (currentMonth == prevMonth) {
+                System.out.println(output);
+            }
+        }
     }
 
     public static void yearToDate() {
-
+        readFromFile();
+        Iterator<Transaction> transactionIterator = transactionsList.iterator();
+        String output;
+        while (transactionIterator.hasNext()) {
+            output = String.valueOf(transactionIterator.next());
+            String[] tokens = output.split("\\|");
+            String[] dateMarkers = tokens[0].split("-");
+            if (dateMarkers[1].equals(timePeriod[1])) {
+                System.out.println(output);
+            }
+        }
     }
 
     public static void previousYear() {
-
+        readFromFile();
+        Iterator<Transaction> transactionIterator = transactionsList.iterator();
+        String output;
+        while (transactionIterator.hasNext()) {
+            output = String.valueOf(transactionIterator.next());
+            String[] tokens = output.split("\\|");
+            String[] dateMarkers = tokens[0].split("-");
+            int currentMonth = Integer.parseInt((dateMarkers[1]));
+            int prevMonth = Integer.parseInt(timePeriod[1]) - 1;
+            if (currentMonth == prevMonth) {
+                System.out.println(output);
+            }
+        }
     }
 
     public static void searchByVendor() {
