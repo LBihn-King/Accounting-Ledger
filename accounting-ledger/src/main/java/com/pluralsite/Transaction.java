@@ -3,7 +3,9 @@ package com.pluralsite;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
@@ -70,13 +72,13 @@ public class Transaction {
     }
 
     public void currentDate() {
-        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         date = currentDate.format(dateFormat);
     }
 
     public void currentTime() {
-        LocalDateTime currentTime = LocalDateTime.now();
+        LocalTime currentTime = LocalTime.now();
         DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
         time = currentTime.format(timeFormat);
     }
@@ -84,12 +86,6 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction{" +
-                "date='" + date + '\'' +
-                "| time='" + time + '\'' +
-                "| description='" + description + '\'' +
-                "| vendor='" + vendor + '\'' +
-                "| amount=" + amount +
-                '}';
+        return date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
     }
 }

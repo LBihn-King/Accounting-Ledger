@@ -1,9 +1,6 @@
 package com.pluralsite;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -26,17 +23,17 @@ public class AccountingLedger {
                 "X) Exit");
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
-            case 'D':
+            case ('D' | 'd'):
                 makeDeposit();
                 break;
-            case 'P':
+            case ('P' | 'p'):
                 newDebit();
                 makePayment();
                 break;
-            case 'L':
+            case ('L' | 'l'):
                 ledgerScreen();
                 break;
-            case 'X':
+            case ('X' | 'x'):
                 System.out.println("Goodbye");
                 return;
             default:
@@ -60,8 +57,6 @@ public class AccountingLedger {
         home();
     }
 
-
-
     public static void ledgerScreen() {
         System.out.println("Ledger: \n\t" +
                 "A) All\n\t" +
@@ -71,19 +66,19 @@ public class AccountingLedger {
                 "H) Home");
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
-            case 'A':
+            case ('A' | 'a'):
                 displayAll();
                 break;
-            case 'D':
+            case ('D' | 'd'):
                 displayDeposits();
                 break;
-            case 'P':
+            case ('P' | 'p'):
                 displayPayments();
                 break;
-            case 'R':
+            case ('R' | 'p'):
                 reportScreen();
                 break;
-            case 'H':
+            case ('H' | 'h'):
                 home();
                 break;
             default:
@@ -95,6 +90,7 @@ public class AccountingLedger {
 
     public static void displayAll() {
         readFromFile();
+        System.out.println(transactionsList);
     }
 
     public static void displayDeposits() {
@@ -176,9 +172,6 @@ public class AccountingLedger {
                 parseTransaction(input);
             }
             bfr.close();
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -197,10 +190,8 @@ public class AccountingLedger {
         double amount = Double.parseDouble(tokens[4]);
 
 
-        // Creates the transaction
-        Transaction transaction = new Transaction(date, time, description, vendor, amount);
-
-
+        Transaction transaction = new Transaction(date, time, description, vendor, amount); // Creates the transaction
+        transactionsList.add(transaction);
     }
 
     private static void newTransaction(Transaction transaction) { //sets values of new transactions when called and writes it to a file
@@ -209,12 +200,12 @@ public class AccountingLedger {
 
             transaction.currentDate();
             transaction.currentTime();
-            System.out.println("Description ");
+            scanner.nextLine();
+            System.out.println("Description: ");
             transaction.setDescription(scanner.nextLine());
             System.out.println("Vendor: ");
             transaction.setVendor(scanner.nextLine());
             System.out.println("Amount: ");
-            scanner.nextLine();
             transaction.setAmount(scanner.nextDouble());
             bufWrite.write(String.valueOf(transaction));
             bufWrite.close();
@@ -225,7 +216,7 @@ public class AccountingLedger {
 
     private static void newDebit() { //sets values of new Debit when called and writes it to a file
         try {
-            BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv"));
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv")); //creates buffered writer and designates file destination
             Debit debit = new Debit();
             System.out.println("Enter debit information:");
             System.out.println("Card Number: ");
