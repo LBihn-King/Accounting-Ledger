@@ -11,7 +11,7 @@ public class AccountingLedger {
     static Scanner scanner = new Scanner(System.in);
     static String file = "transactions.csv";
     static char selectedChar;
-    static ArrayList<Transaction> transactions= new ArrayList<>();
+    static ArrayList<Transaction> transactionsList = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -27,10 +27,10 @@ public class AccountingLedger {
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
             case 'D':
-                addDeposit();
+                makeDeposit();
                 break;
             case 'P':
-                getPaymentInformation();
+                newDebit();
                 makePayment();
                 break;
             case 'L':
@@ -46,33 +46,21 @@ public class AccountingLedger {
 
         }
     }
-
-    private static void addDeposit() {
-
-    }
-
-    private static void getPaymentInformation() {
-        try {
-            BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv"));
-            Debit debit = new Debit();
-            System.out.println("Enter payment information:");
-            System.out.println("Card Number: ");
-            debit.setCardNumber(scanner.nextInt());
-            System.out.println("Expiration: ");
-            scanner.nextLine();
-            debit.setExpirationDate(scanner.nextLine());
-            System.out.println("Security code: ");
-            debit.setSecurityCode(scanner.nextShort());
-            bufWrite.write(String.valueOf(debit));
-            bufWrite.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private static void makeDeposit() {
+        System.out.println("Enter deposit details:");
+        Transaction deposit = new Transaction();
+        newTransaction(deposit);
+        home();
     }
 
     public static void makePayment() {
-
+        System.out.println("Enter payment details:");
+        Transaction payment = new Transaction();
+        newTransaction(payment);
+        home();
     }
+
+
 
     public static void ledgerScreen() {
         System.out.println("Ledger: \n\t" +
@@ -171,6 +159,7 @@ public class AccountingLedger {
     public static void searchByVendor() {
 
     }
+
     public static void readFromFile() {
         // Try to open the file
         try {
@@ -196,8 +185,6 @@ public class AccountingLedger {
     }
 
 
-
-
     public static void parseTransaction(String input) {
         // split the input
         String[] tokens = input.split("\\|");
@@ -216,34 +203,77 @@ public class AccountingLedger {
 
     }
 
-        public static void writeToFile(String action) {
-            // Get the local date and time
-            LocalDate date = LocalDate.now();
-            LocalTime time = LocalTime.now();
+    private static void newTransaction(Transaction transaction) { //sets values of new transactions when called and writes it to a file
+        try {
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file));
 
-            String entry = (date + "|" + time.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "|" + action + "\n");
-
-            try {
-                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
-                // Write the date, time and action to the ledger.csv file
-                bufferedWriter.write(entry);
-                System.out.println("Entry recorded");
-
-                bufferedWriter.close();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            transaction.currentDate();
+            transaction.currentTime();
+            System.out.println("Description ");
+            transaction.setDescription(scanner.nextLine());
+            System.out.println("Vendor: ");
+            transaction.setVendor(scanner.nextLine());
+            System.out.println("Amount: ");
+            scanner.nextLine();
+            transaction.setAmount(scanner.nextDouble());
+            bufWrite.write(String.valueOf(transaction));
+            bufWrite.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+    }
 
-    public static void logTransaction(Transaction transaction){
+    private static void newDebit() { //sets values of new Debit when called and writes it to a file
+        try {
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv"));
+            Debit debit = new Debit();
+            System.out.println("Enter debit information:");
+            System.out.println("Card Number: ");
+            debit.setCardNumber(scanner.nextInt());
+            System.out.println("Expiration: ");
+            scanner.nextLine();
+            debit.setExpirationDate(scanner.nextLine());
+            System.out.println("Security code: ");
+            debit.setSecurityCode(scanner.nextShort());
+            bufWrite.write(String.valueOf(debit));
+            bufWrite.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //Code Graveyard
+
+    /*public static void writeToFile(String action) {
+        // Get the local date and time
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+
+        String entry = (date + "|" + time.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "|" + action + "\n");
+
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
+            // Write the date, time and action to the ledger.csv file
+            bufferedWriter.write(entry);
+            System.out.println("Entry recorded");
+
+            bufferedWriter.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }*/
+
+
+
+    /*public static void logTransaction(ArrayList<Transaction> transactions) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true));
-            bufferedWriter.write(transaction + "\n");
+            bufferedWriter.write(transactions + "\n");
             bufferedWriter.close();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
 }

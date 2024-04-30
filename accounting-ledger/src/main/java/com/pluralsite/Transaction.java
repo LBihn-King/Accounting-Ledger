@@ -21,6 +21,14 @@ public class Transaction {
         this.amount = amount;
     }
 
+    public Transaction() {
+        this.date = "date";
+        this.time = "time";
+        this.description = "description";
+        this.vendor = "vendor";
+        this.amount = 0;
+    }
+
     public String getDate() {
         return date;
     }
@@ -61,21 +69,27 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public static String getCurrentDate() {
-        LocalDateTime date = LocalDateTime.now();
+    public void currentDate() {
+        LocalDateTime currentDate = LocalDateTime.now();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return dateFormat.format(date);
+        date = currentDate.format(dateFormat);
     }
 
-    public  static String getCurrentTime() {
-        LocalDateTime time = LocalDateTime.now();
+    public void currentTime() {
+        LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
-        return timeFormat.format(time);
-    }
-
-    public static String getCurrentDateTime() {
-        return getCurrentDate() + "|" + getCurrentTime();
+        time = currentTime.format(timeFormat);
     }
 
 
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "date='" + date + '\'' +
+                "| time='" + time + '\'' +
+                "| description='" + description + '\'' +
+                "| vendor='" + vendor + '\'' +
+                "| amount=" + amount +
+                '}';
+    }
 }
