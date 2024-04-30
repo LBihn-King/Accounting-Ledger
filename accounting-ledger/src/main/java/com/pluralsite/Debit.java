@@ -5,10 +5,16 @@ public class Debit {
     private String expirationDate;
     private short securityCode;
 
-    public Debit(int cardNumber, String expirationDate, short securityCode) {
+    public Debit() {
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
         this.securityCode = securityCode;
+    }
+
+    public Debit(int cardNumber, String expirationDate, short securityCode) {
+        this.cardNumber = 0;
+        this.expirationDate = "";
+        this.securityCode = 0;
     }
 
     public int getCardNumber() {
@@ -33,5 +39,14 @@ public class Debit {
 
     public void setSecurityCode(short securityCode) {
         this.securityCode = securityCode;
+    }
+
+    @Override
+    public String toString() {
+        return "Debit{" +
+                "cardNumber=" + cardNumber +
+                ", expirationDate='" + expirationDate + '\'' +
+                ", securityCode=" + securityCode +
+                '}';
     }
 }
