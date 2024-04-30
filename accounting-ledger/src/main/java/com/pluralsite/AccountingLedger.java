@@ -235,7 +235,14 @@ public class AccountingLedger {
     }
 
     public static void searchByVendor() {
-
+        System.out.println("Enter vendor name: ");
+        String search = scanner.nextLine();
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            if (transaction.getVendor().equals(search)) {
+                System.out.println(transaction);
+            }
+        }
     }
 
     public static void readFromFile() {
