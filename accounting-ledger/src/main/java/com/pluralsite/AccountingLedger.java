@@ -8,14 +8,14 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class AccountingLedger {
-    static Scanner scanner = new Scanner(System.in);
-    static String file = "transactions.csv";
-    static char selectedChar;
-    static ArrayList<Transaction> transactionsList = new ArrayList<>();
-    static LocalDate date = LocalDate.now();
-    static DateTimeFormatter currentDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    static String dmy = (date.format(currentDate));
-    static String[] timePeriod = dmy.split("-");
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final String file = "transactions.csv";
+    private static char selectedChar;
+    private static final ArrayList<Transaction> transactionsList = new ArrayList<>();
+    private static final LocalDate date = LocalDate.now();
+    private static final DateTimeFormatter currentDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String dmy = (date.format(currentDate));
+    private static  final String[] timePeriod = dmy.split("-");
 
     public static void main(String[] args) {
         home();
@@ -40,6 +40,7 @@ public class AccountingLedger {
                 ledgerScreen();
                 break;
             case ('X' | 'x'):
+                scanner.close();
                 System.out.println("Goodbye");
                 return;
             default:
@@ -301,7 +302,7 @@ public class AccountingLedger {
 
     private static void newDebit() { //sets values of new Debit when called and writes it to a file
         try {
-            BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv")); //creates buffered writer and designates file destination
+            BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv", true)); //creates buffered writer and designates file destination
             Debit debit = new Debit();
             System.out.println("Enter debit information:");
             

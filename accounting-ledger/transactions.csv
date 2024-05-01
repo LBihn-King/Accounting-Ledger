@@ -1,3 +1,5 @@
 date|time|description|vendor|amount
 2023-04-30|15:35:51|purchase|store|-1234.0
 2024-04-30|15:42:11|paycheck|workplace|2200.0
+2024-04-30|23:46:16|payment2|store|-1234.0
+2024-05-01|00:05:42|deposit|person|100.0

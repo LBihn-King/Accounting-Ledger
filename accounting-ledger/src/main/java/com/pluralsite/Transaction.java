@@ -1,10 +1,6 @@
 package com.pluralsite;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -86,6 +82,6 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return date + "|" + time + "|" + description + "|" + vendor + "|" + amount + "\n";
+        return date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
     }
 }
