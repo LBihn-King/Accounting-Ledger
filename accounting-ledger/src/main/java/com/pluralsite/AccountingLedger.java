@@ -15,7 +15,7 @@ public class AccountingLedger {
     private static final LocalDate date = LocalDate.now();
     private static final DateTimeFormatter currentDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String dmy = (date.format(currentDate));
-    private static  final String[] timePeriod = dmy.split("-");
+    private static final String[] timePeriod = dmy.split("-");
 
     public static void main(String[] args) {
         home();
