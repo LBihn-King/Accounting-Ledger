@@ -30,14 +30,14 @@ public class AccountingLedger {
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
             case ('D' | 'd'):
-                makeDeposit(); // complete
+                makeDeposit();
                 break;
             case ('P' | 'p'):
                 newDebit();
-                makePayment(); // complete
+                makePayment();
                 break;
             case ('L' | 'l'):
-                ledgerScreen(); // complete
+                ledgerScreen();
                 break;
             case ('X' | 'x'):
                 System.out.println("Goodbye");
@@ -59,19 +59,19 @@ public class AccountingLedger {
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
             case ('A' | 'a'):
-                displayAll(); //complete
+                displayAll();
                 break;
             case ('D' | 'd'):
-                displayDeposits(); // complete
+                displayDeposits();
                 break;
             case ('P' | 'p'):
-                displayPayments(); // complete
+                displayPayments();
                 break;
             case ('R' | 'p'):
                 reportScreen();
                 break;
             case ('H' | 'h'):
-                home(); //complete
+                home();
                 break;
             default:
                 System.out.println("Invalid input");
@@ -106,11 +106,11 @@ public class AccountingLedger {
                 searchByVendor();
                 break;
             case 0:
-                reportScreen();
+                ledgerScreen();
                 break;
             default:
                 System.out.println("Invalid input");
-                ledgerScreen();
+                reportScreen();
                 break;
         }
     }
@@ -121,7 +121,7 @@ public class AccountingLedger {
         newTransaction(deposit);
         try {
             BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
-            bufWrite.write(String.valueOf(deposit));
+            bufWrite.write((deposit)+"\n");
             bufWrite.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -136,7 +136,7 @@ public class AccountingLedger {
         payment.setAmount(-payment.getAmount());
         try {
             BufferedWriter bufWrite = new BufferedWriter(new FileWriter(file, true));
-            bufWrite.write(String.valueOf(payment));
+            bufWrite.write((payment)+"\n");
             bufWrite.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -152,6 +152,7 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             System.out.println(output);
         }
+        ledgerScreen();
     }
 
     public static void displayDeposits() {
@@ -186,6 +187,7 @@ public class AccountingLedger {
                 System.out.println(output);
             }
         }
+        reportScreen();
     }
 
     public static void previousMonth() {
@@ -202,6 +204,7 @@ public class AccountingLedger {
                 System.out.println(output);
             }
         }
+        reportScreen();
     }
 
     public static void yearToDate() {
@@ -216,6 +219,7 @@ public class AccountingLedger {
                 System.out.println(output);
             }
         }
+        reportScreen();
     }
 
     public static void previousYear() {
@@ -232,33 +236,34 @@ public class AccountingLedger {
                 System.out.println(output);
             }
         }
+        reportScreen();
     }
 
     public static void searchByVendor() {
         System.out.println("Enter vendor name: ");
         String search = scanner.nextLine();
+        scanner.nextLine();
         readFromFile();
         for (Transaction transaction : transactionsList) {
             if (transaction.getVendor().equals(search)) {
                 System.out.println(transaction);
             }
         }
+        reportScreen();
     }
 
     public static void readFromFile() {
         // Try to open the file
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader(file));
-            String input;
-            boolean skippedHeader = false;
-
+            BufferedReader bfr = new BufferedReader(new FileReader(file)); // create buffered reader with input file
+            String input; // create string to hold input
+            boolean header = false; //create boolean that decides if header should be skipped
             while ((input = bfr.readLine()) != null) {
-                if (!skippedHeader) {
-                    skippedHeader = true;
-                    continue;
+                if (!header) { //
+                    header = true;
+                    continue; //skips header
                 }
-                // Populate the transaction
-                parseTransaction(input);
+                parseTransaction(input); // Populate the transaction
             }
             bfr.close();
         } catch (IOException e) {
@@ -266,23 +271,20 @@ public class AccountingLedger {
         }
     }
 
-
     public static void parseTransaction(String input) {
-        // split the input
-        String[] tokens = input.split("\\|");
+        String[] tokens = input.split("\\|"); // split the input
 
-        // Parse the tokens
-        String date = tokens[0];
+        String date = tokens[0]; // parse the tokens
         String time = tokens[1];
         String description = tokens[2];
         String vendor = tokens[3];
         double amount = Double.parseDouble(tokens[4]);
 
-        Transaction transaction = new Transaction(date, time, description, vendor, amount); // Creates the transaction
-        transactionsList.add(transaction);
+        Transaction transaction = new Transaction(date, time, description, vendor, amount); // creates the transaction
+        transactionsList.add(transaction); // adds transaction to array list
     }
 
-    private static void newTransaction(Transaction transaction) { //sets values of new transactions
+    private static void newTransaction(Transaction transaction) { // sets values of new transactions
         transaction.currentDate();
         transaction.currentTime();
         scanner.nextLine();
@@ -319,39 +321,4 @@ public class AccountingLedger {
             throw new RuntimeException(e);
         }
     }
-
-    //Code Graveyard
-
-    /*public static void writeToFile(String action) {
-        // Get the local date and time
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
-
-        String entry = (date + "|" + time.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "|" + action + "\n");
-
-        try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
-            // Write the date, time and action to the ledger.csv file
-            bufferedWriter.write(entry);
-            System.out.println("Entry recorded");
-
-            bufferedWriter.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }*/
-
-
-
-    /*public static void logTransaction(ArrayList<Transaction> transactions) {
-        try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true));
-            bufferedWriter.write(transactions + "\n");
-            bufferedWriter.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
 }
