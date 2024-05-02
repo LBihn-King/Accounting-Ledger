@@ -190,7 +190,7 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             String[] tokens = output.split("\\|");
             String[] dateMarkers = tokens[0].split("-");
-            if (dateMarkers[2].equals(timePeriod[2])) {
+            if (dateMarkers[1].equals(timePeriod[1])) {
                 System.out.println(output);
             }
         }
@@ -205,9 +205,9 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             String[] tokens = output.split("\\|");
             String[] dateMarkers = tokens[0].split("-");
-            int currentMonth = Integer.parseInt(dateMarkers[2]);
-            int prevMonth = Integer.parseInt(timePeriod[2]) - 1;
-            if (currentMonth == prevMonth && dateMarkers[1].equals(timePeriod[1])) {
+            int currentMonth = Integer.parseInt(dateMarkers[1]);
+            int prevMonth = Integer.parseInt(timePeriod[1]) - 1;
+            if (currentMonth == prevMonth && dateMarkers[0].equals(timePeriod[0])) {
                 System.out.println(output);
             }
         }
@@ -222,7 +222,7 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             String[] tokens = output.split("\\|");
             String[] dateMarkers = tokens[0].split("-");
-            if (dateMarkers[1].equals(timePeriod[1])) {
+            if (dateMarkers[0].equals(timePeriod[0])) {
                 System.out.println(output);
             }
         }
@@ -237,8 +237,8 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             String[] tokens = output.split("\\|");
             String[] dateMarkers = tokens[0].split("-");
-            int currentMonth = Integer.parseInt((dateMarkers[1]));
-            int prevMonth = Integer.parseInt(timePeriod[1]) - 1;
+            int currentMonth = Integer.parseInt((dateMarkers[0]));
+            int prevMonth = Integer.parseInt(timePeriod[0]) - 1;
             if (currentMonth == prevMonth) {
                 System.out.println(output);
             }
