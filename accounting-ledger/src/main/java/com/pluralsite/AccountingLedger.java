@@ -3,9 +3,7 @@ package com.pluralsite;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class AccountingLedger {
     private static final Scanner scanner = new Scanner(System.in);
@@ -31,10 +29,12 @@ public class AccountingLedger {
         switch (selectedChar) {
             case ('D' | 'd'):
                 makeDeposit();
+                home();
                 break;
             case ('P' | 'p'):
                 newDebit();
                 makePayment();
+                home();
                 break;
             case ('L' | 'l'):
                 ledgerScreen();
@@ -61,12 +61,15 @@ public class AccountingLedger {
         switch (selectedChar) {
             case ('A' | 'a'):
                 displayAll();
+                ledgerScreen();
                 break;
             case ('D' | 'd'):
                 displayDeposits();
+                ledgerScreen();
                 break;
             case ('P' | 'p'):
                 displayPayments();
+                ledgerScreen();
                 break;
             case ('R' | 'p'):
                 reportScreen();
@@ -93,18 +96,23 @@ public class AccountingLedger {
         switch (selection) {
             case 1:
                 monthToDate();
+                reportScreen();
                 break;
             case 2:
                 previousMonth();
+                reportScreen();
                 break;
             case 3:
                 yearToDate();
+                reportScreen();
                 break;
             case 4:
                 previousYear();
+                reportScreen();
                 break;
             case 5:
                 searchByVendor();
+                reportScreen();
                 break;
             case 0:
                 ledgerScreen();
@@ -127,7 +135,6 @@ public class AccountingLedger {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        home();
     }
 
     public static void makePayment() {
@@ -142,7 +149,6 @@ public class AccountingLedger {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        home();
     }
 
     public static void displayAll() {
@@ -153,7 +159,7 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             System.out.println(output);
         }
-        ledgerScreen();
+        transactionsList.clear();
     }
 
     public static void displayDeposits() {
@@ -163,7 +169,7 @@ public class AccountingLedger {
                 System.out.println(transaction);
             }
         }
-        ledgerScreen();
+        transactionsList.clear();
     }
 
     public static void displayPayments() {
@@ -173,7 +179,7 @@ public class AccountingLedger {
                 System.out.println(transaction);
             }
         }
-        ledgerScreen();
+        transactionsList.clear();
     }
 
     public static void monthToDate() {
@@ -188,7 +194,7 @@ public class AccountingLedger {
                 System.out.println(output);
             }
         }
-        reportScreen();
+        transactionsList.clear();
     }
 
     public static void previousMonth() {
@@ -199,13 +205,13 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             String[] tokens = output.split("\\|");
             String[] dateMarkers = tokens[0].split("-");
-            int currentMonth = Integer.parseInt((dateMarkers[2]));
+            int currentMonth = Integer.parseInt(dateMarkers[2]);
             int prevMonth = Integer.parseInt(timePeriod[2]) - 1;
-            if (currentMonth == prevMonth) {
+            if (currentMonth == prevMonth && dateMarkers[1].equals(timePeriod[1])) {
                 System.out.println(output);
             }
         }
-        reportScreen();
+        transactionsList.clear();
     }
 
     public static void yearToDate() {
@@ -220,7 +226,7 @@ public class AccountingLedger {
                 System.out.println(output);
             }
         }
-        reportScreen();
+        transactionsList.clear();
     }
 
     public static void previousYear() {
@@ -237,7 +243,7 @@ public class AccountingLedger {
                 System.out.println(output);
             }
         }
-        reportScreen();
+        transactionsList.clear();
     }
 
     public static void searchByVendor() {
@@ -250,7 +256,7 @@ public class AccountingLedger {
                 System.out.println(transaction);
             }
         }
-        reportScreen();
+        transactionsList.clear();
     }
 
     public static void readFromFile() {
@@ -267,6 +273,7 @@ public class AccountingLedger {
                 parseTransaction(input); // Populate the transaction
             }
             bfr.close();
+            Collections.reverse(transactionsList);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
