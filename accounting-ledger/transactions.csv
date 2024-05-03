@@ -3,3 +3,6 @@ date|time|description|vendor|amount
 2024-04-30|15:42:11|paycheck|workplace|2200.0
 2024-04-30|23:46:16|payment2|store|-1234.0
 2024-05-01|00:05:42|deposit|person|100.0
+2024-05-03|11:14:47|description|vendor|1234.0
+2024-05-03|11:37:55|testdeposit|vendor|100.0
+2024-05-03|11:40:12|testdeposit2|vendor|123.0

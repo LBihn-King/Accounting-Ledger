@@ -101,37 +101,90 @@ public class AccountingLedger {
                 "2) Previous Month\n\t" +
                 "3) Year To Date\n\t" +
                 "4) Previous Year\n\t" +
-                "5) Search By Vendor\n\t" +
-                "0) Back");
-        int selection = scanner.nextInt();
-        switch (selection) {
-            case 1:
-                monthToDate();
-                reportScreen();
-                break;
-            case 2:
-                previousMonth();
-                reportScreen();
-                break;
-            case 3:
-                yearToDate();
-                reportScreen();
-                break;
-            case 4:
-                previousYear();
-                reportScreen();
-                break;
-            case 5:
-                searchByVendor();
-                reportScreen();
-                break;
-            case 0:
-                ledgerScreen();
-                break;
-            default:
-                System.out.println("Invalid input");
-                reportScreen();
-                break;
+                "5) Custom Search\n\t" +
+                "6) Back\n\t" +
+                "0) Home");
+        try {
+            int selection = scanner.nextInt();
+            switch (selection) {
+                case 1:
+                    monthToDate();
+                    reportScreen();
+                    break;
+                case 2:
+                    previousMonth();
+                    reportScreen();
+                    break;
+                case 3:
+                    yearToDate();
+                    reportScreen();
+                    break;
+                case 4:
+                    previousYear();
+                    reportScreen();
+                    break;
+                case 5:
+                    customSearch();
+                    reportScreen();
+                case 6:
+                    ledgerScreen();
+                    break;
+                case 0:
+                    home();
+                    break;
+                default:
+                    System.out.println("Invalid input");
+                    reportScreen();
+                    break;
+            }
+        } catch (Exception e) {
+            scanner.nextLine();
+            System.out.println("Invalid input");
+            reportScreen();
+        }
+    }
+
+    public static void customSearch() {
+        System.out.println("Custom Search: \n\t" +
+                "1) Search By Description\n\t" +
+                "2) Search By Vendor\n\t" +
+                "3) Search By Date\n\t" +
+                "4) Search By Amount\n\t" +
+                "5) Back\n\t" +
+                "0) Home");
+        try {
+            int selection = scanner.nextInt();
+            switch (selection) {
+                case 1:
+                    searchByName();
+                    customSearch();
+                    break;
+                case 2:
+                    searchByVendor();
+                    customSearch();
+                    break;
+                case 3:
+                    searchByDate();
+                    customSearch();
+                    break;
+                case 4:
+                    searchByAmount();
+                    customSearch();
+                case 5:
+                    reportScreen();
+                    break;
+                case 0:
+                    home();
+                    break;
+                default:
+                    System.out.println("Invalid input");
+                    customSearch();
+                    break;
+            }
+        } catch (Exception e) {
+            scanner.nextLine();
+            System.out.println("Invalid input");
+            customSearch();
         }
     }
 
@@ -271,6 +324,48 @@ public class AccountingLedger {
         transactionsList.clear();
     }
 
+    public static void searchByName() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter search term: ");
+        String search = scanner.nextLine();
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            String description = transaction.getDescription();
+            if (description.equalsIgnoreCase(search)) {
+                System.out.println(transaction);
+            }
+        }
+        transactionsList.clear();
+    }
+
+    public static void searchByDate() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter date (yyyy-MM-dd): ");
+        String search = scanner.nextLine();
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            String date = transaction.getDate();
+            if (date.equalsIgnoreCase(search)) {
+                System.out.println(transaction);
+            }
+        }
+        transactionsList.clear();
+    }
+    public static void searchByAmount() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter amount: ");
+        double search = scanner.nextDouble();
+        readFromFile();
+        for (Transaction transaction : transactionsList) {
+            double amount = transaction.getAmount();
+            if (amount == search) {
+                System.out.println(transaction);
+            }
+        }
+        transactionsList.clear();
+    }
+
+
     public static void readFromFile() {
         // Try to open the file
         try {
@@ -308,7 +403,6 @@ public class AccountingLedger {
         Scanner scanner = new Scanner(System.in);
         transaction.currentDate();
         transaction.currentTime();
-        scanner.nextLine();
 
         System.out.println("Description: ");
         transaction.setDescription(scanner.nextLine());
@@ -318,7 +412,6 @@ public class AccountingLedger {
 
         System.out.println("Amount: ");
         transaction.setAmount(scanner.nextDouble());
-        scanner.close();
     }
 
     private static void newDebit() { //sets values of new Debit when called and writes it to a file
@@ -340,7 +433,6 @@ public class AccountingLedger {
             
             bufWrite.write(String.valueOf(debit));
             bufWrite.close();
-            scanner.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
