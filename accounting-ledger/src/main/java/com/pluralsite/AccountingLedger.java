@@ -6,17 +6,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class AccountingLedger {
+    //create global variables
     private static final Scanner scanner = new Scanner(System.in);
     private static final String file = "transactions.csv";
     private static char selectedChar;
-    private static final ArrayList<Transaction> transactionsList = new ArrayList<>();
+    private static final ArrayList<Transaction> transactionsList = new ArrayList<>(); //creates the ArrayList
+
     private static final LocalDate date = LocalDate.now();
     private static final DateTimeFormatter currentDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String dmy = (date.format(currentDate));
     private static final String[] timePeriod = dmy.split("-");
 
     public static void main(String[] args) {
-        home();
+        home(); //begin program from home screen
     }
 
     public static void home() {
@@ -237,9 +239,9 @@ public class AccountingLedger {
             output = String.valueOf(transactionIterator.next());
             String[] tokens = output.split("\\|");
             String[] dateMarkers = tokens[0].split("-");
-            int currentMonth = Integer.parseInt((dateMarkers[0]));
-            int prevMonth = Integer.parseInt(timePeriod[0]) - 1;
-            if (currentMonth == prevMonth) {
+            int currentYear = Integer.parseInt((dateMarkers[0]));
+            int prevYear = Integer.parseInt(timePeriod[0]) - 1;
+            if (currentYear == prevYear) {
                 System.out.println(output);
             }
         }
