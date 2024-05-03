@@ -258,9 +258,9 @@ public class AccountingLedger {
     }
 
     public static void searchByVendor() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter vendor name: ");
         String search = scanner.nextLine();
-        scanner.nextLine();
         readFromFile();
         for (Transaction transaction : transactionsList) {
             String vendor = transaction.getVendor();
@@ -305,6 +305,7 @@ public class AccountingLedger {
     }
 
     private static void newTransaction(Transaction transaction) { // sets values of new transactions
+        Scanner scanner = new Scanner(System.in);
         transaction.currentDate();
         transaction.currentTime();
         scanner.nextLine();
@@ -317,10 +318,12 @@ public class AccountingLedger {
 
         System.out.println("Amount: ");
         transaction.setAmount(scanner.nextDouble());
+        scanner.close();
     }
 
     private static void newDebit() { //sets values of new Debit when called and writes it to a file
         try {
+            Scanner scanner = new Scanner(System.in);
             BufferedWriter bufWrite = new BufferedWriter(new FileWriter("paymentinformation.csv", true)); //creates buffered writer and designates file destination
             Debit debit = new Debit();
             System.out.println("Enter debit information:");
@@ -337,6 +340,7 @@ public class AccountingLedger {
             
             bufWrite.write(String.valueOf(debit));
             bufWrite.close();
+            scanner.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
