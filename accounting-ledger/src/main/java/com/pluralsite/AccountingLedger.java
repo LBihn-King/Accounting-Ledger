@@ -29,19 +29,23 @@ public class AccountingLedger {
                 "X) Exit");
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
-            case ('D' | 'd'):
+            case ('D'):
+            case ('d'):
                 makeDeposit();
                 home();
                 break;
-            case ('P' | 'p'):
+            case ('P'):
+            case ('p'):
                 newDebit();
                 makePayment();
                 home();
                 break;
-            case ('L' | 'l'):
+            case ('L'):
+            case ('l'):
                 ledgerScreen();
                 break;
-            case ('X' | 'x'):
+            case ('X'):
+            case ('x'):
                 scanner.close();
                 System.out.println("Goodbye");
                 return;
@@ -61,22 +65,27 @@ public class AccountingLedger {
                 "H) Home");
         selectedChar = scanner.next().charAt(0);
         switch (selectedChar) {
-            case ('A' | 'a'):
+            case ('A'):
+            case ('a'):
                 displayAll();
                 ledgerScreen();
                 break;
-            case ('D' | 'd'):
+            case ('D'):
+            case ('d'):
                 displayDeposits();
                 ledgerScreen();
                 break;
-            case ('P' | 'p'):
+            case ('P'):
+            case ('p'):
                 displayPayments();
                 ledgerScreen();
                 break;
-            case ('R' | 'p'):
+            case ('R'):
+            case ('r'):
                 reportScreen();
                 break;
-            case ('H' | 'h'):
+            case ('H'):
+            case ('h'):
                 home();
                 break;
             default:
@@ -254,7 +263,8 @@ public class AccountingLedger {
         scanner.nextLine();
         readFromFile();
         for (Transaction transaction : transactionsList) {
-            if (transaction.getVendor().equals(search)) {
+            String vendor = transaction.getVendor();
+            if (vendor.equalsIgnoreCase(search)) {
                 System.out.println(transaction);
             }
         }
